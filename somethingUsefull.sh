@@ -16,13 +16,13 @@ sleep 1
 
 clear
 
-echo "Total distance travel: "
+echo "Total distance needed to travel in km: "
 read dis
 
 clear
 
 case $sel in
-1)
+1 | 109)
 maxF=401
 (( ReqF = $dis / 3))
 #(( ReqF = $conv1 / 100))
@@ -35,7 +35,7 @@ echo "$ReqF liters of fuel is required to make the travel of $dis km."
 fi
 
 ;;
-2)
+2 | 111)
 maxF=8570
 #(( conv1 = $dis * 9))
 (( ReqF = $dis * 4))
@@ -49,7 +49,7 @@ fi
 
 ;;
 
-3)
+3 | Ju88)
 maxF=3000
 (( conv1 = $dis * 9))
 (( ReqF = $conv1 / 10))
