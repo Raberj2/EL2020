@@ -43,13 +43,18 @@ def read_touchsensor():
 #	blinkOnce(17)
 #cleanup the GPIO when done
 def main():
-	while True:
-		read_touchsensor()
+	
+		while True:
+			read_touchsensor()
+			time.sleep(.2)
+			data = readF(12)
+			log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(data)))
 
 if __name__ == '__main__':
 	try:
-		main()
-		pass
+		with open("log/templog.csv", "a") as log:
+			main()
+			pass
 	except KeyboardInterrupt:
 		pass
 GPIO.cleanup()
