@@ -1,5 +1,6 @@
 # EL2020
 
-Was unable to complete due to finish the sql section due to needing to pack in an emergency
+Able to fininsh assignment in class
 
-
+Run python tempsqlite.py
+database can be found in log/tempLog.db
