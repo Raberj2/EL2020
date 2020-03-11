@@ -2,8 +2,9 @@
 import RPi.GPIO as GPIO
 import time
 import Adafruit_DHT
-import sqlite3 as mydb
-import sys
+import sqlite3 as sql
+import os
+import smtplib
 
 tempSensor = Adafruit_DHT.DHT11
 #initialize the gpio
@@ -14,12 +15,14 @@ GPIO.setup(13, GPIO.OUT) #green light
 GPIO.setup(12, GPIO.IN, pull_up_down=GPIO.PUD_UP) #hum
 #This function will make the light blink once
 
+con = sql.connect('log/tempLog.db')
+cur = con.cursor()
 
 def readF(pin):
 	humidity, temperature = Adafruit_DHT.read_retry(tempSensor, 12)
 	temperature = temperature*9/5.0+32
 	if humidity is not None and temperature is not None:
-		tempFahr = '{0:0.1f}*F'.format(temperature)
+		tempFahr = '{0:0.1f}'.format(temperature)
 		print(tempFahr)
 	else:
 		print('Error Reading Sensor')
@@ -28,7 +31,7 @@ def readF(pin):
 def readH(pin):
 	humidity, temperature = Adafruit_DHT.read_retry(tempSensor, 12)
 	if humidity is not None and temperature is not None:
-		humid = '{0:0.1f}%'.format(humidity)
+		humid = '{0:0.1f}'.format(humidity)
 		print(humid)
 	else:
 		print('Error Reading Sensor')
@@ -43,14 +46,6 @@ def lightrange(temp):
 		GPIO.output(17, False)
 		GPIO.output(13, True)
 	return
-
-def create_connection(inFile):
-	conn = None
-	try:
-		conn = sqlite3.connect(inFile)
-	except Error as e:
-		print(e)
-	return conn
 
 #unable to finish due to reasons explained in readme
 
@@ -77,21 +72,23 @@ def create_connection(inFile):
 #for i in range(10):
 #	blinkOnce(17)
 #cleanup the GPIO when done
-def main():
+try:
 		while True:
 #			read_touchsensor()
-			time.sleep(60)
+#			time.sleep(60)
 			dataT = readF(12)
 			dataH = readH(12)
 			lightrange(dataT)
-			log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(dataT) + ", " + str(dataH)))
+			cur.execute('INSERT INTO tempLog values(?,?,?)',(time.strftime('%Y-%m-%d %H:%M:%S'), dataT, dataH))
+			con.commit()
+			table = con.execute("select * from tempLog")
+			time.sleep(60)
+			os.system('clear')
+#			log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(dataT) + ", " + str(dataH)))
 #			log.write("{0},{1}\n".format(time.strftime("%Y-%m-%d %H:%M:%S"),str(dataH)))
 
-if __name__ == '__main__':
-	try:
-		with open("log/templog.csv", "a") as log:
-			main()
-			pass
-	except KeyboardInterrupt:
-		pass
-GPIO.cleanup()
+except KeyboardInterrupt:
+	os.system('clear')
+	con.close()
+	exit(0)
+	GPIO.cleanup()
