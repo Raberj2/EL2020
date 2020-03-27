@@ -1,7 +1,5 @@
 #!/usr/bin/python
-
-#THis script creates a Flask server, and serves the index.html out of the templates folder.
-#It also creates an app route to be called via ajax from javascript in the index.html to query
+#THis script creates a Flask server, and serves the index.html out of the templates folder.#It also creates an app route to be called via ajax from javascript in the index.html to query
 #the database that is being written to by tempReader.py, and return the data as a json object.
 
 #This was written for Joshua Simons's Embedded Linux Class at SUNY New Paltz 2020
@@ -13,9 +11,9 @@ import sqlite3 as sql
 import json
 
 #Globals
-con = sql.connect('../log/tempLog.db')
+con = sql.connect('../log/templog.db')
 cur = con.cursor()
-app = Flask(__name__)
+app = Flask(__name__, templa
 
 @app.route("/")
 def index():
@@ -33,4 +31,4 @@ def chartData():
 	return Response(json.dumps(chartData), mimetype='application/json')
 
 if __name__ == "__main__":
-	app.run(host='0.0.0.0', port=2020, debug=True)
+	app.run(host='192.168.1.219', port=2020, debug=True)

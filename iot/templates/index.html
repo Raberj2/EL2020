@@ -17,10 +17,21 @@
 
 		<center>
 			<div id="gauge" style="width: 250px; height: 250px"></div>
-			<div id="curve_chart" style="width: 1200px; height: 1200px"></div>
+			<div id="curve_chart" style="width: 2000px; height: 1200px"></div>
+			<button onClick="button()">Blink LED</button>
 		</center>
 
 		<script type='text/javascript'>
+			function button() {
+				//$.GET('/button');
+				$.ajax({
+					type:'get',
+					url:'/button',
+					cache:false,
+					async:'asynchronus'
+				});
+				//console.log('Test For pushbutton');
+			}
 			//Load the charts libraries
 			google.charts.load('current', {packages:['gauge']});
 			google.charts.load('current', { packages: ['corechart'] });
